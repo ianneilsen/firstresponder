@@ -573,11 +573,14 @@ echo '=========================================='
 debsums -c
 debsums -C
 
+echo
+
 #########################################################
 # Malware scans - simple regexs
 #########################################################
 
 ## Malware scans using remote gtihub repo and regex patterns
+echo
 echo "${YELLOW}--== Malware checks using simple regex patterns ==--${NC}"
 echo echo "${GREEN}--===================================================--${NC}"
 echo
@@ -656,11 +659,14 @@ find / -type f -name .fetchmailrc
 #locate '.pwd'
 #locate '.sql'
 
+echo
 echo " Look for htaccess file/s"
 echo '=========================================='
 find / -name .htaccess
 
 locate '.htpasswd'
+echo "htpass"
+
 locate '.bash_history'
 locate '.mysql_history'
 locate '.pgpass'
@@ -772,12 +778,17 @@ echo "Check logs quickly for signs of intrusion"
 echo '=========================================='
 echo
 
+echo
 echo "grep sql injection in httpd logs"
+echo '=========================================='
 grep -iP "UNION" /var/log/apache2/access* 
 
+echo
 echo "grep sql injection in httpd logs"
+echo '=========================================='
 grep -ic "failed" /var/log/apache2/error* |grep -v :0
 
+#TODO add in my common log greps for malicious hits
 
 #########################################################
 # Check swap space

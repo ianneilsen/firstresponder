@@ -254,7 +254,12 @@ echo " show all process file struc and cmds -- good"
 echo '=========================================='
 ps auxwe
 
+echo
+echo "Show all cron jobs for users"
+echo '=========================================='
+for user in $(cut -f1 -d: /etc/passwd); do echo $user; crontab -u $user -l; done
 
+echo
 #########################################################
 ## FILES DIRECTORIES -- Check files, files file and dirs
 #########################################################

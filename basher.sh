@@ -510,7 +510,7 @@ echo '=========================================='
 find / -xdev -user root  -perm -4000 -o -perm -2000
 echo 
 
-#TODO sort these file checks out and remove any dups or useless checks
+#TODO sort these file checks out and remove any dups or useless
 
 #########################################################
 ## Users

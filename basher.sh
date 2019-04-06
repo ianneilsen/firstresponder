@@ -9,7 +9,9 @@
 # collecting information on the system and performing some rudimentary malware checks.
 #
 # Great place to start when you suspect a your system is playing up. Every sysadmin should have these bags of tricks in their pockets
-#Author: Ian Neilsen 7functions
+#Author: Ian Neilsen 7functions http://twitter.com/ianneilsen
+#Props to http://blog.sevagas.com/ - http://twitter.com/EmericNasi Some ideas and scripts taken from his old blog. cmds ref where possible
+
 ###########################################################################
 
 SUCCESS=0
@@ -503,6 +505,12 @@ echo '=========================================='
 find / -type f -perm -02000 -ls
 
 
+echo "Find setgid on user root all dirs"
+echo '=========================================='
+find / -xdev -user root  -perm -4000 -o -perm -2000
+echo 
+
+#TODO sort these file checks out and remove any dups or useless checks
 
 #########################################################
 ## Users

@@ -576,6 +576,25 @@ debsums -C
 echo
 
 #########################################################
+# Audit log and selinux checks
+#########################################################
+echo
+## ausearch
+
+echo
+echo "ausearch user login -m USER_LOGIN -sv no"
+ausearch -m USER_LOGIN -sv no
+
+echo
+echo "ausearch user login - au root"
+ausearch -ua root
+
+echo
+echo "ausearch -m user stuff -i"
+ausearch -m ADD_USER,DEL_USER,USER_CHAUTHTOK,ADD_GROUP,DEL_GROUP,CHGRP_ID,ROLE_ASSIGN,ROLE_REMOVE  -i
+
+
+#########################################################
 # Malware scans - simple regexs
 #########################################################
 

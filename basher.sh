@@ -213,7 +213,6 @@ echo "${GREEN} Start jamming on processes ${NC}"
 echo
 #########################################################
 
-
 echo " Show me all of ps tree with file paths"
 echo '=========================================='
 ps -auxwf
@@ -258,6 +257,11 @@ echo
 echo "Show all cron jobs for users"
 echo '=========================================='
 for user in $(cut -f1 -d: /etc/passwd); do echo $user; crontab -u $user -l; done
+
+echo
+echo "Apapche top if installed"
+apachetop
+echo
 
 echo
 #########################################################
@@ -587,6 +591,10 @@ echo
 ## ausearch
 
 echo
+echo "Run auditctl -l"
+auditctl -l
+
+echo
 echo "ausearch user login -m USER_LOGIN -sv no"
 ausearch -m USER_LOGIN -sv no
 
@@ -687,6 +695,13 @@ echo
 echo " Look for htaccess file/s"
 echo '=========================================='
 find / -name .htaccess
+
+
+echo
+echo "# The following command searches for all .htaccess files in all subdirectories that contains ‘http’. This will list all redirect rules that may include malicious redirect"
+echo '=========================================='
+find . -type f -name '\.htaccess' | xargs grep -i http;
+echo
 
 locate '.htpasswd'
 echo "htpass"

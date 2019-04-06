@@ -722,6 +722,15 @@ locate dump
 # Grep dodgy stuff in files
 #########################################################
 
+# Grep dodgy php files
+
+echo
+echo "php files with dodgy encodings"
+
+find / -type f -name "*.php" | xargs grep -l "eval *(" --color
+find / -type f -name "*.php" | xargs grep -l "base64_decode *(" --color
+find / -type f -name "*.php" | xargs grep -l "gzinflate *(" --color
+
 ## grepping for simple terms
 echo "${YELLOW}--== webshell string checks - simple ==--${NC}"
 echo echo "${GREEN}--===================================================--${NC}"

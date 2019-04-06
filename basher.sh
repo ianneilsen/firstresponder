@@ -314,7 +314,8 @@ done
 unset ww_scan_dir
 unset ww_scan_dirs
 
-echo "2 -looking for bin files"
+echo
+echo "Looking for bin files"
 echo '=========================================='
 find / -name \*.bin
 
@@ -323,22 +324,27 @@ echo "1 - checking permissions setgid and guid"
 echo '=========================================='
 find / -type f \( -perm -04000 -o -perm -02000 \) -exec ls -lg {} \;
 
+echo
 echo " immmutable files/dris"
 echo '=========================================='
 lsattr / -R 2> /dev/null | grep "\----i"
 
+echo
 echo " Missing setgid and guid"
 echo '=========================================='
 find / -type f \( -perm -04000 -o -perm -02000 \) -exec ls -lg {} \;
 
+echo
 echo " no user or group on all files/dirs"
 echo '=========================================='
 find / \( -nouser -o -nogroup \) -exec ls -lg {} \;
 
+echo
 echo " find executables"
 echo '=========================================='
 #find / -type f -exec file -p '{}' \; | grep ELF
 
+echo
 echo " dev null history file"
 echo '=========================================='
 ls -alR / 2> /dev/null | grep .*history | grep null
@@ -473,16 +479,18 @@ echo '=========================================='
 
 #find /tmp/* -type f -mtime -7 -maxdepth 4 -exec egrep -q “eval\(|exec\(|gzinflate\(|base64_decode\(|str_rot13\(|gzuncompress\(|rawurldecode\(|strrev\(|ini_set\(chr|chr\(rand\(|shell_exec\(|fopen\(|curl_exec\(|popen\(|x..x..” {} \; -print
 
-# find all writable folders and files" => "
+echo "Find all writable folders and files => "
+echo '=========================================='
 find / -perm -2 -ls
 
 # find all suid files
 echo "find all suid files"
+echo '=========================================='
 find / -type f -perm -04000 -ls
 
 
-# find all sgid files
-echo "# find all sgid files"
+echo "Find all sgid files"
+echo '=========================================='
 find / -type f -perm -02000 -ls
 
 
@@ -491,46 +499,56 @@ find / -type f -perm -02000 -ls
 ## Users
 #########################################################
 
+echo
 echo " whos is online now"
 echo '=========================================='
 who -la
 
+echo
 echo " show me no user all"
 echo '=========================================='
 find / -nouser
 
+echo
 echo " show me no group all"
 echo '=========================================='
 find / -nogroup
 
+echo
 echo " show me current logins"
 echo '=========================================='
 utmpdump < /var/run/utmp
 
+echo
 echo " show me all bad logins"
 echo '=========================================='
 utmpdump < /var/log/btmp*
 
+echo
 echo " show me valid past logins"
 echo '=========================================='
 utmpdump < /var/log/wtmp*
 
+echo
 echo " search for all no user files types"
 #find / -xdev -fstype xfs -nouser
 
+echo
 echo " show me all no group file types"
 #find / -xdev -fstype xfs -nogroup
 
+echo
 echo " diff no use search all file system"
 echo '=========================================='
 find / -nogroup -nouse
 
-echo "empty password"
+echo
+echo "Empty passwords"
 echo '=========================================='
 awk -F':' '{ if ( $2 == ""  ) print $1 }' /etc/shadow
 
 echo
-echo "is there more than one UID 0"
+echo "Is there more than one UID 0"
 echo '=========================================='
 awk -F':' '{ if ( $3 == "0"  ) print $1 }' /etc/passwd
 
@@ -544,10 +562,12 @@ cat /etc/login.defs | grep -E ^UID_MIN | sed -r 's/ +/ /g' | cut -d " " -f 2
 # Package checks
 #########################################################
 
+echo
 echo "Show my rpm packages modified"
 echo '=========================================='
 rpm -Va | grep ^..5
 
+echo
 echo "Show my deb packages modified"
 echo '=========================================='
 debsums -c
@@ -562,20 +582,23 @@ echo "${YELLOW}--== Malware checks using simple regex patterns ==--${NC}"
 echo echo "${GREEN}--===================================================--${NC}"
 echo
 
-
+echo
 echo "scan malware patterns in usr"
 echo '=========================================='
 #cd /usr && python <(curl -ks https://raw.githubusercontent.com/ianneilsen/Pyscan/master/pyscan.py)
 
+echo
 echo "scan malware patterns in www"
 echo '=========================================='
 #cd /var/www
 #python <(curl -ks https://raw.githubusercontent.com/ianneilsen/Pyscan/master/pyscan.py)
 
+echo
 echo "scan malware patterns in home"
 echo '=========================================='
 #cd /home && python <(curl -ks https://raw.githubusercontent.com/ianneilsen/Pyscan/master/pyscan.py)
 
+echo
 echo "scan malware patterns in root"
 echo '=========================================='
 #cd /root && python <(curl -ks https://raw.githubusercontent.com/ianneilsen/Pyscan/master/pyscan.py)
@@ -600,19 +623,19 @@ echo '=========================================='
 echo "# find all sgid files"
 find / -type f -name config.inc.php
 
-# find config* files" => "
+echo "# find config* files => "
 find / -type f -name \"config*\"
 
-# find all service.pwd files" => "
+echo "# find all service.pwd files => "
 find / -type f -name service.pwd
 
-# find all .htpasswd files" => "
+echo "# find all .htpasswd files => "
 find / -type f -name .htpasswd
 
-# find all .bash_history files" => "
+echo "# find all .bash_history files => "
 find / -type f -name .bash_history
 
-# find all .fetchmailrc files" => "
+echo "# find all .fetchmailrc files => "
 find / -type f -name .fetchmailrc
 
 #locate httpd.conf
@@ -665,15 +688,18 @@ echo '=========================================='
 echo
 
 echo
-echo "grep for webshell 1 of 17"
+echo "grep for webshell in var 1 of 17"
+echo '=========================================='
 grep --exclude-dir=run -Rilw webshell /var 
 
 echo
-echo "grep for webshell 2 of 19"
+echo "grep for webshell in root 2 of 19"
+echo '=========================================='
 grep -Rilw webshell /root
 
 echo
-echo "grep for webshell 3 of 19"
+echo "grep for webshell in tmp 3 of 19"
+echo '=========================================='
 grep -Rilw webshell /tmp 
 
 

@@ -1,2 +1,2 @@
 # firstresponder
-Basic linux forensic commands - save time and use check script
+Basic linux commands to perform quick checks on servers

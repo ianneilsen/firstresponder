@@ -48,6 +48,34 @@ usage()
   exit $SUCCESS
 }
 
+usage () 
+{ 
+echo -e "\n\e[00;31m#########################################################\e[00m" 
+echo -e "\e[00;31m#\e[00m" "\e[00;33mLocal Linux Enumeration & Privilege Escalation Script\e[00m" "\e[00;31m#\e[00m"
+echo -e "\e[00;31m#########################################################\e[00m"
+echo -e "\e[00;33m# devprocsys.com | @devprocsys \e[00m"
+echo -e "\e[00;33m# $version\e[00m\n"
+echo -e "\e[00;33m# Example: ./basher.sh -k keyword -r report -e /tmp/ -t \e[00m\n"
+
+    echo "OPTIONS:"
+    echo "-k  Enter keyword"
+    echo "-e  Enter export location"
+    echo "-s  Supply user password for sudo checks (INSECURE)"
+    echo "-t  Include thorough (lengthy) tests"
+    echo "-r  Enter report name" 
+    echo "-h  Displays this help text"
+    echo -e "\n"
+    echo "Running with no options = limited scans/no output file"
+
+echo -e "\n" 
+echo -e "\e[00;33mScan started at:"; date 
+echo -e "\e[00m\n" 
+
+echo -e "\e[00;31m#########################################################\e[00m"    
+sleep 3
+
+}
+
 # leet banner, important stuff ;-)
 banner()
 {
@@ -67,6 +95,7 @@ check_uid()
   	echo "==++== Hey buddy ==++== You ready to rock?${NC}"
   	echo
   fi
+  sleep 3
 }
 # Print a pretty message - Unicorns are ????
 msg1()
@@ -78,7 +107,9 @@ msg1()
 # eddie murphy
 main()
 {
-	banner
+	usage
+  header
+  banner
 	check_uid
 	#check_files
 	#check_network
@@ -91,44 +122,81 @@ main()
 
 main "${0}"
 
+# USeful binary list - Mostly used in rootkits and exploits
+binarylist='nmap\|perl\|awk\|find\|bash\|sh\|man\|more\|less\|vi\|emacs\|vim\|nc\|netcat\|python\|ruby\|lua\|irb\|tar\|zip\|gdb\|pico\|scp\|git\|rvim\|script\|ash\|csh\|curl\|dash\|ed\|env\|expect\|ftp\|sftp\|node\|php\|rpm\|rpmquery\|socat\|strace\|taskset\|tclsh\|telnet\|tftp\|wget\|wish\|zsh\|ssh$\|ip$\|arp\|mtr'
+
 #######################################################
 ## System Info
 #######################################################
 
-echo "cat spool and cron"
-echo '=========================================='
-cat /var/spool/cron/*
-cat cat /var/spool/cron/crontabs/*
+echo -e "\e[00;33m### SYSTEM Info##############################################\e[00m"
 
-echo "Hostname and kernel"
+#host name an dkernel from systemd
+echo -e "Hostname and kernel"
 echo '=========================================='
 hostnamectl
+echo -e "\n"
 
+#basic kernel info
+unameinfo=`uname -a 2>/dev/null`
+if [ "$unameinfo" ]; then
+  echo -e "\e[00;31m[-] Kernel information:\e[00m\n$unameinfo" 
+  echo -e "\n" 
+fi
+
+# kernel info
+procver=`cat /proc/version 2>/dev/null`
+if [ "$procver" ]; then
+  echo -e "\e[00;31m[-] Kernel information (continued):\e[00m\n$procver" 
+  echo -e "\n" 
+fi
+
+#search all *-release files for version info
+release=`cat /etc/*-release 2>/dev/null`
+if [ "$release" ]; then
+  echo -e "\e[00;31m[-] Specific release information:\e[00m\n$release" 
+  echo -e "\n" 
+fi
+
+#target hostname info
+hostnamed=`hostname 2>/dev/null`
+if [ "$hostnamed" ]; then
+  echo -e "\e[00;31m[-] Hostname:\e[00m\n$hostnamed" 
+  echo -e "\n" 
+fi
+
+#show me ips
 echo "ipconfig"
 echo '=========================================='
 ipconfig
+echo -e "\n"
 
+#show me current iptables
+echo "Show me iptables -L"
+echo '=========================================='
+iptables -L -n --line-numbers
+echo -e "\n"
+
+#show me all under systemd systemc status
 echo "systemctl status"
 echo '=========================================='
 systemctl status
 
-echo "Show me iptables -L"
-echo '=========================================='
-iptables -L -n --line-numbers
 
-
+echo "Sleeping for 20seconds so you can read - to bypass pres ENTER"
+sleep 20
 
 ## Kicking off the tests - wahoo lets go!!
 #########################################################
 ## NETWORKING
 #########################################################
 echo
-echo "Lets start with network"
+echo "Lets start with network #2"
 echo "${GREEN} NETWORKING ${NC}"
 echo
 #########################################################
 
-echo "3 - Network all ports/socket capture"
+echo "Network all ports/socket capture"
 echo '=========================================='
 netstat -anp
 
@@ -136,19 +204,19 @@ echo "Network all tcp/udp"
 echo '=========================================='
 netstat -antu
 
-echo "4 -lsof all super verbose"
+echo "lsof all super verbose"
 echo '=========================================='
 #lsof -V
 ## Uncomment if you want everything - long output
 
-echo "5 - lsof show me listening ports"
+echo "lsof show me listening ports"
 echo '=========================================='
 #lsof -Pni
 ## Uncomment if you want everything - long output
 
 echo "lsof all sockets "
 echo '=========================================='
-lsof -Pwln
+#lsof -Pwln
 
 echo " network routing"
 echo '=========================================='
@@ -185,9 +253,9 @@ echo " show me all unique ips"
 echo '=========================================='
 ss -tp | grep -v Recv-Q | sed -e 's/.*users:(("//' -e 's/".*$//' | sort | uniq
 
-echo "show me lsof of activie listening connections "
+echo "show me lsof of active listening connections "
 echo '=========================================='
-lsof -Pni
+#lsof -Pni
 
 echo " lsof on http logs"
 echo '=========================================='
@@ -205,7 +273,12 @@ echo " ss socket connections "
 echo '=========================================='
 ss -nap
 
+echo " Netstat with numeric ports sorted by user "
+echo '=========================================='
+netstat -atpel --numeric-ports |sort -k7,7
 
+
+sleep 10
 
 #########################################################
 # PROCESSES - Check yo process yo
@@ -214,6 +287,10 @@ echo
 echo "${GREEN} Start jamming on processes ${NC}"
 echo
 #########################################################
+
+echo "Check no daemons are unconfined by selinux"
+echo '=========================================='
+ps -eZ | egrep "initrc" | egrep -vw "tr|ps|egrep|bash|awk" | tr ':' ' ' | awk '{ print $NF }'
 
 echo " Show me all of ps tree with file paths"
 echo '=========================================='
@@ -259,6 +336,12 @@ echo
 echo "Show all cron jobs for users"
 echo '=========================================='
 for user in $(cut -f1 -d: /etc/passwd); do echo $user; crontab -u $user -l; done
+
+#TODO move to cron specific
+echo "cat spool and cron"
+echo '=========================================='
+cat /var/spool/cron/*
+cat cat /var/spool/cron/crontabs/*
 
 echo
 echo "Apapche top if installed"
@@ -331,7 +414,7 @@ echo '=========================================='
 find / -name \*.bin
 
 echo
-echo "1 - checking permissions setgid and guid"
+echo "Checking permissions setgid and guid - maybe missing"
 echo '=========================================='
 find / -type f \( -perm -04000 -o -perm -02000 \) -exec ls -lg {} \;
 
@@ -339,11 +422,6 @@ echo
 echo " immmutable files/dris"
 echo '=========================================='
 lsattr / -R 2> /dev/null | grep "\----i"
-
-echo
-echo " Missing setgid and guid"
-echo '=========================================='
-find / -type f \( -perm -04000 -o -perm -02000 \) -exec ls -lg {} \;
 
 echo
 echo " no user or group on all files/dirs"
@@ -493,6 +571,8 @@ echo '=========================================='
 echo "Find all writable folders and files => "
 echo '=========================================='
 find / -perm -2 -ls
+#TDOD - refine this above call too verbose
+
 
 # find all suid files
 echo "find all suid files"
@@ -869,6 +949,11 @@ echo
 echo "grep swap space for card string"
 strings <swap_device> | grep "&card="
 
+
+call_each()
+{
+  system_info
+ }
 
 
 echo 
